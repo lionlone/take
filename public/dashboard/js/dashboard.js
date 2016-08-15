@@ -3,6 +3,17 @@ var config = '/ckfinder/upload/html';
 loadHistory();
 loadNotice();
 loadPolicy();
+$(document).on('click', '#recover-password2', function() {
+	if (confirm('Một liên kết khôi phục mật khẩu cấp 2 sẽ được gửi về email.\nBạn có đồng ý?')) {
+		$.get('/member/recoverpass2/', function(data) {
+			if (isValidEmailAddress(data)) {
+				alert('Đã gửi liên kết khôi phục mật khẩu cấp 2 về địa chỉ email ' + data);
+			} else {
+				alert('Lỗi: ' + data);
+			}
+		});
+	}
+});
 function isValidEmailAddress(emailAddress) {
 	var pattern = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 	return pattern.test(emailAddress);
@@ -136,9 +147,6 @@ $(document).on('click', '#btn-transferpin', function() {
 	})
 	.done(function(data) {
 		alert(data);
-		$('#pin-password2').val('');
-		$('#touser').val('');
-		$('#pin').val('');
 		loadHistory();
 	});
 });

@@ -7,10 +7,15 @@ class Login extends CI_Controller {
 	    $this->load->model('Login_model','login');
 	}
 	public function ckeck_login(){
-	        if ($this->login->ckeck_login()) {
-	        	echo "1";
-	        	//redirect();
-		} else {
+		$login = $this->login->ckeck_login();
+		if ($login == '1') {
+        	echo "1";
+        	//redirect();
+		}
+		else if($login == 'look'){
+			echo "Tài khoản bị khóa liên hệ với tuyến trên.";
+		}
+		else if($login == '0'){
 			echo "0";
 		    	//redirect('login');
 		}
@@ -103,7 +108,22 @@ class Login extends CI_Controller {
 		}
 	}
 	
+	public function rlink2($encode = "") {
+		$remove_key = urldecode(str_replace("p3rc3nt", "%", substr($encode, 10)));
+		$decode = base64_decode($remove_key);
+		if (preg_match("/username=(\w+)&password=(\w+)/", $decode, $array)) {
+			$data = array(
+				'username' => $array[1],
+				'password' => $array[2]
+			);
+			$this->load->view('dashboard/recover2_view', $data);
+		}
+	}
+	
 	public function recoverpw() {
 		echo $this->login->recoverPassword($this->input->post_get('username', TRUE), $this->input->post_get('password', TRUE), md5($this->input->post_get('newpassword', TRUE)));
+	}
+	public function recoverpw2() {
+		echo $this->login->recoverPassword2($this->input->post_get('username', TRUE), $this->input->post_get('password', TRUE), md5($this->input->post_get('newpassword', TRUE)));
 	}
 }

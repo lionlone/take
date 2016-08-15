@@ -75,7 +75,7 @@ class Pin_model extends CI_Model {
 		    $array[$row['userid']] = $row['username'];
 		}
 		$this->db->select("*");
-		$this->db->where("fromuser = '{$fromuser}' OR touser = '{$fromuser}'");
+		$this->db->where("fromuser = '{$fromuser}' OR touser = '{$fromuser}' ORDER BY date");
 		$query = $this->db->get("history_pin");
 		$result = "";
 	        foreach($query->result_array() as $row){

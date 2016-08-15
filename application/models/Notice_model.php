@@ -57,9 +57,9 @@ class Notice_model extends CI_Model {
 				'danger' => 'glyphicon glyphicon-remove-sign',
 			);
 			foreach($query->result_array() as $row){
-				if (strlen($row['content']) > 500) {
+				/*if (strlen($row['content']) > 500) {
 					$row['content'] = mb_substr($row['content'], 0, 500, "utf-8")."<br><a href=\"".base_url()."member/view/".$row['id']."\" >Đọc tiếp...</a>";
-				}
+				}*/
 				$result .= "<div class=\"alert alert-".$row['type']." alert-dismissible\" role=\"alert\">";
 				$result .= "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>";
 				$result .= "<span class=\"".$sign[$row['type']]."\" aria-hidden=\"true\"></span> <strong>".$row['title']."</strong><br>".$row['content']."</div>";

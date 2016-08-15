@@ -8,7 +8,7 @@
 					<div class="panel-heading">
 						<h5 class="panel-title">Đặt lệnh</h5>
 					<div class="panel-body">
-						<form id="add-new-gh" role="form">
+						<form id="add-new-ph" role="form">
 							<div class="form-group">
 								<label>Số lệnh muốn đặt</label>
 								<input type="text" class="hidden" name="room" id="room" value="<?= $room; ?>">
@@ -33,19 +33,19 @@
 							<table class="table text-nowrap">
 								<thead>
 									<tr>
-										<th class="col-md-2">Ngày bắt đầu</th>
-										<th class="col-md-2">Thời gian chờ</th>
-										<th class="col-md-2">Lợi nhuận</th>
+										<th>Ngày bắt đầu</th>
+										<th>Thời gian chờ</th>
+										<th>Lợi nhuận</th>
 										<th>Nguồn lệnh</th>
 									</tr>
 								</thead>
 								<tbody>
 									<?php foreach ($wait as $key => $value): ?>
 										<tr>
-											<td><?= date('d/m/Y H:i:s', $value['starttime']); ?></td>
+											<td class="col-md-2"><?= date('d/m/Y', $value['starttime']); ?></td>
 											<td class="countdown"><?= date('H:i:s m/d/Y', $value['endtime']); ?></td>
-											<td><?= $value['profit']; ?></td>
-											<td><?= $this->session->userdata('login'); ?></td>
+											<td class="col-md-2"><?= $value['profit']; ?></td>
+											<td class="col-md-2"><?= $this->session->userdata('login'); ?></td>
 										</tr>
 									<?php endforeach ?>
 								</tbody>
@@ -59,7 +59,7 @@
 			<div class="row">
 				<div class="panel panel-flat">
 					<div class="panel-heading">
-						<h5 class="panel-title">Khớp lệnh GH</h5>
+						<h5 class="panel-title">Khớp lệnh PH</h5>
 					</div>
 					<div class="panel-body">
 						<div class="table-responsive">
@@ -67,7 +67,8 @@
 								<thead>
 									<tr>
 										<th class="col-md-2">Ngày khớp lệnh</th>
-										<th class="col-md-2">Thời gian chờ</th>
+										<!-- <th class="col-md-2">Thời gian thực hiện</th> -->
+										<th>Số tiền</th>
 										<th>Nguồn lệnh</th>
 										<th class="col-md-2">Danh sách chuyển</th>
 									</tr>
@@ -75,10 +76,10 @@
 								<tbody>
 									<?php foreach ($join as $key => $value): ?>
 										<tr>
-											<td><?= date('d/m/Y H:i:s', $value['starttime']); ?></td>
-											<td class="countdown"><?= date('H:i:s m/d/Y', $value['endtime']); ?></td>
-											<td><?= $this->session->userdata('login'); ?></td>
-											<td id="<?= $value['phid']; ?>"><button type="button" class="btn btn-primary btn-listsend" id="btn-submit" data-toggle="modal" data-target="#listsend">Xem danh sách</button></td>
+											<td class="col-md-2"><?= date('d/m/Y', $value['starttime']); ?></td>
+											<td class="col-md-2"><?= $value['profit']*2; ?></td>
+											<td class="col-md-2"><?= $this->session->userdata('login'); ?></td>
+											<td class="col-md-2"><button type="button" class="btn btn-primary btn-list-receive-ph" value="<?= $value['phid']; ?>" id="btn-submit" data-toggle="modal">Xem danh sách</button></td>
 										</tr>
 									<?php endforeach ?>
 								</tbody>
@@ -92,7 +93,7 @@
 			<div class="row">
 				<div class="panel panel-flat">
 					<div class="panel-heading">
-						<h5 class="panel-title">Lịch sử thành công</h5>
+						<h5 class="panel-title">PH thành công</h5>
 					</div>
 					<div class="panel-body">
 						<div class="table-responsive">
@@ -100,18 +101,24 @@
 								<thead>
 									<tr>
 										<th class="col-md-2">Ngày đặt lệnh</th>
-										<th class="col-md-2">Thời kết thúc</th>
-										<th>Nguồn lệnh</th>
-										<th class="col-md-2">Trạng thái</th>
+										<th class="col-md-2">Ngày kết thúc</th>
+										<th class="col-md-2">Nguồn lệnh</th>
+										<th class="col-md-2">Danh sách chuyển</th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
-										<td>31/07/2016 09:24:02</td>
-										<td>1/08/2016 09:24:02</td>
-										<td>tailoc</td>
-										<td>Đã thành công</td>
-									</tr>
+									<?php foreach ($historyPH as $key => $value): ?>
+										<tr>
+											<td><?= date('d/m/Y', $value['starttime']); ?></td>
+											<td><?= date('d/m/Y', $value['endtime']); ?></td>
+											<td><?= $value['username']; ?> 
+											<?php if ($value['levelkey'] == 1): ?>
+												<a href="<?= base_url(); ?>/member/unlook/<?= $value['idsource']; ?>/<?= $value['phid']; ?>/<?= $room; ?>" class="btn btn-primary ">Mở khóa</a>
+											<?php endif ?>
+											</td>
+											<td><button type="button" class="btn btn-primary btn-list-receive-ph" value="<?= $value['phid']; ?>" id="btn-submit" data-toggle="modal">Xem danh sách</button></td>
+										</tr>
+									<?php endforeach ?>
 								</tbody>
 							</table>
 						</div>
@@ -120,7 +127,7 @@
 			</div>
 		</div>
 	<!-- Modal -->
-		<div class="modal fade" id="listsend" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal fade" id="list-receive" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 		  <div class="modal-dialog" role="document">
 			<div class="modal-content">
 			  <div class="modal-header">
@@ -133,14 +140,14 @@
 			  <div class="modal-body">
 				<div class="card green  summary-inline flat-item">
 					<div class="card-body">
-						<i class="icon fa fa-1x"></i>Người chuyển 1
+						<i class="icon fa fa-1x"></i>Người nhận 1
 						<div class="content">
-							<div class="code">#132132</div>
+							<div class="code" id="code1">#</div>
 						</div>
 						<div class="clear-both"></div>
 					</div>
 				</div>
-				<div class="list-send" id="content-alert2">
+				<div class="list-receive" id="content-alert2">
 					<div class="table-responsive">
 						<table class="table table-hover">
 							<thead>
@@ -157,64 +164,68 @@
 							</thead>
 							<tbody>
 								<tr>
-									<td><i class="icon fa icon-user-check fa-1x"> </i> ID người chuyển</td>
-									<td>Tailoc</td>
+									<td><i class="icon fa icon-user-check fa-1x"> </i> ID người nhận</td>
+									<td id="user1"></td>
 								</tr>
 								<tr>
-									<td><i class="icon fa icon-user-check fa-1x"> </i> Tên người chuyển</td>
-									<td>NGUYEN MANH THANG</td>
+									<td><i class="icon fa icon-user-check fa-1x"> </i> Tên người nhận</td>
+									<td id="name1"></td>
 								</tr>
 								<tr>
 									<td><i class="icon fa icon-phone fa-1x"> </i> Số điện thoại</td>
-									<td>0123456789</td>
+									<td id="phone1"></td>
 								</tr>
 								<tr>
 									<td><i class="icon fa icon-mention fa-1x"> </i> Email</td>
-									<td>rmail@gmail.com</td>
+									<td id="email1"></td>
 								</tr>
 								<tr>
 									<td><i class="icon fa icon-credit-card  fa-1x"> </i> Số tài khoản</td>
-									<td>0011001515</td>
+									<td id="bank1"></td>
 								</tr>
 								<tr>
 									<td><i class="icon fa fa-home fa-1x"> </i> Chi nhánh</td>
-									<td>Hà Nội</td>
+									<td id="branch1"></td>
 								</tr>
 								<tr>
-									<td><i class="icon fa icon-user-lock fa-1x"> </i> ID bảo trợ </td>
-									<td>admin</td>
+									<td><i class="icon fa icon-user-lock fa-1x"> </i> Người bảo trợ </td>
+									<td id="ref_user1"></td>
 								</tr>
 								<tr>
 									<td><i class="icon fa icon-phone fa-1x"> </i> Số điện thoại bảo trợ </td>
-									<td>0123456789</td>
+									<td id="ref_phone1"></td>
 								</tr>
 								<tr>
-									<td><i class="icon fa fa-usd fa-1x"> </i> Số tiền chuyển</td>
-									<td>1,500,000</td>
+									<td><i class="icon fa fa-usd fa-1x"> </i> Số tiền </td>
+									<td id="profit1"></td>
 								</tr>
 								<tr>
-									<td><i class="icon fa fa-times fa-1x"> </i> Thời gian còn lại</td>
-									<td class="countdown"></td>
+									<td><i class="icon glyphicon glyphicon-time fa-1x"> </i> Thời gian còn lại</td>
+									<td id="countdown1"></td>
 								</tr>
 								<tr>
 									<td><i class="icon fa fa-active fa-1x"> </i> Tình trạng</td>
-									<td>Chưa chuyển</td>
+									<td id="status1"></td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 				</div>
 				<div class="text-center">
-					<button type="button" class="btn btn-default card green" data-dismiss="modal" id="send">Đã nhận tiền</button>
-					<button type="button" class="btn btn-default card green" data-dismiss="modal" id="send">Báo cáo</button>
+					<button type="button" class="btn btn-default card green btn-sent-ph" id="send1">Đã gửi tiền</button>
+					<span class="btn btn-default card green fileinput-button" id="upanh1" style="display:none;">
+						<span>Up ảnh</span>
+						<input id="btn-upanh-1" type="file" name="files[]" accept="image/*">
+					</span>
+					<div class="col-md-12" id="image1">
+						<div class="progress-bar progress-bar-success" style="display:none;"></div>
+					</div>
 				</div>
-			  </div>
-			  <div class="modal-body">
 				<div class="card green  summary-inline flat-item">
 					<div class="card-body">
-						<i class="icon fa fa-1x"></i>Người chuyển 2
+						<i class="icon fa fa-1x"></i>Người nhận 2
 						<div class="content">
-							<div class="code">#132133</div>
+							<div class="code" id="code2">#</div>
 						</div>
 						<div class="clear-both"></div>
 					</div>
@@ -236,60 +247,66 @@
 							</thead>
 							<tbody>
 								<tr>
-									<td><i class="icon fa icon-user-check fa-1x"> </i> ID người chuyển</td>
-									<td>Tailoc</td>
+									<td><i class="icon fa icon-user-check fa-1x"> </i> ID người nhận</td>
+									<td id="user2"></td>
 								</tr>
 								<tr>
-									<td><i class="icon fa icon-user-check fa-1x"> </i> Tên người chuyển</td>
-									<td>NGUYEN MANH THANG</td>
+									<td><i class="icon fa icon-user-check fa-1x"> </i> Tên người nhận</td>
+									<td id="name2"></td>
 								</tr>
 								<tr>
 									<td><i class="icon fa icon-phone fa-1x"> </i> Số điện thoại</td>
-									<td>0123456789</td>
+									<td id="phone2"></td>
 								</tr>
 								<tr>
 									<td><i class="icon fa icon-mention fa-1x"> </i> Email</td>
-									<td>rmail@gmail.com</td>
+									<td id="email2"></td>
 								</tr>
 								<tr>
 									<td><i class="icon fa icon-credit-card  fa-1x"> </i> Số tài khoản</td>
-									<td>0011001515</td>
+									<td id="bank2"></td>
 								</tr>
 								<tr>
 									<td><i class="icon fa fa-home fa-1x"> </i> Chi nhánh</td>
-									<td>Hà Nội</td>
+									<td id="branch2"></td>
 								</tr>
 								<tr>
-									<td><i class="icon fa icon-user-lock fa-1x"> </i> ID bảo trợ </td>
-									<td>admin</td>
+									<td><i class="icon fa icon-user-lock fa-1x"> </i> Người bảo trợ </td>
+									<td id="ref_user2"></td>
 								</tr>
 								<tr>
 									<td><i class="icon fa icon-phone fa-1x"> </i> Số điện thoại bảo trợ </td>
-									<td>0123456789</td>
+									<td id="ref_phone2"></td>
 								</tr>
 								<tr>
-									<td><i class="icon fa fa-usd fa-1x"> </i> Số tiền chuyển</td>
-									<td>1,500,000</td>
+									<td><i class="icon fa fa-usd fa-1x"> </i> Số tiền </td>
+									<td id="profit2"></td>
 								</tr>
 								<tr>
-									<td><i class="icon fa fa-times fa-1x"> </i> Thời gian còn lại</td>
-									<td>10 giờ 20 phút</td>
+									<td><i class="icon glyphicon glyphicon-time fa-1x"> </i> Thời gian còn lại</td>
+									<td id="countdown2"></td>
 								</tr>
 								<tr>
 									<td><i class="icon fa fa-active fa-1x"> </i> Tình trạng</td>
-									<td>Chưa chuyển</td>
+									<td id="status2"></td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 				</div>
 				<div class="text-center">
-					<button type="button" class="btn btn-default card green" data-dismiss="modal" id="send">Đã nhận tiền</button>
-					<button type="button" class="btn btn-default card green" data-dismiss="modal" id="send">Báo cáo</button>
+					<button type="button" class="btn btn-default card green btn-sent-ph" id="send2">Đã gửi tiền</button>
+					<span class="btn btn-default card green fileinput-button" id="upanh2" style="display:none;">
+						<span>Up ảnh</span>
+						<input id="btn-upanh-2" type="file" name="files[]" accept="image/*">
+					</span>
+					<div class="col-md-12" id="image2">
+						<div class="progress-bar progress-bar-success" style="display:none;"></div>
+					</div>
 				</div>
 			  </div>
 			  <div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal"><!--  -->OK</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
 			  </div> 
 			</div>
 		  </div>

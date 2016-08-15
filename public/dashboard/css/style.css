@@ -1563,3 +1563,6 @@ body.login-page .login-footer {
 .modal-dialog-400 {
 	max-width: 400px;
 }
+#status1 ,#status2 ,#status3{
+	color: red;
+}

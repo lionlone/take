@@ -16,17 +16,24 @@ class Login_model extends CI_Model {
         $num = $query->num_rows();
         if ($num === 1) {
         	$row = $query->row();
-        	$this->session->set_userdata('login', $username);
-        	$this->session->set_userdata('userid', $row->userid);
-        	$this->session->set_userdata('name', $row->name);
-        	$this->session->set_userdata('email', $row->email);
-        	$this->session->set_userdata('bank', $row->bank);
-        	$this->session->set_userdata('branch', $row->branch);
-        	$this->session->set_userdata('phone', $row->phone);
-        	$this->session->set_userdata('level', $row->level);
-        	$this->session->set_userdata('referral', $row->referral);
-			$this->session->set_userdata('admin', $row->admin);
-        	return true;
+        	$query = $this->db->query("SELECT * FROM user WHERE username = '$username' AND  md5password = '$password' AND active != 0");
+        	$num_active = $query->num_rows();
+        	if ($num_active == 1) {
+        		return 'look';
+        	}
+        	else{
+        		$this->session->set_userdata('login', $username);
+	        	$this->session->set_userdata('userid', $row->userid);
+	        	$this->session->set_userdata('name', $row->name);
+	        	$this->session->set_userdata('email', $row->email);
+	        	$this->session->set_userdata('bank', $row->bank);
+	        	$this->session->set_userdata('branch', $row->branch);
+	        	$this->session->set_userdata('phone', $row->phone);
+	        	$this->session->set_userdata('level', $row->level);
+	        	$this->session->set_userdata('referral', $row->referral);
+				$this->session->set_userdata('admin', $row->admin);
+	        	return true;
+        	}
         }
         else{
         	return false;
@@ -93,5 +100,16 @@ class Login_model extends CI_Model {
 			return "-1";
 		}
 	}
-
+	public function recoverPassword2($username = "", $password = "", $newpassword = "") {
+		$sql = "SELECT username FROM user WHERE username = '{$username}' AND md5password2 = '{$password}';";
+		$query = $this->db->query($sql);
+		if ($query->num_rows() > 0) {
+			$sql = "UPDATE user SET md5password2 = '{$newpassword}' WHERE username = '{$username}' AND md5password2 = '{$password}';";
+			if ($this->db->query($sql)) 
+				echo "99";
+			else echo "0";
+		} else {
+			return "-1";
+		}
+	}
 }

@@ -38,13 +38,15 @@
             <script type="text/javascript" src="<?= base_url() ?>public/dashboard/lib/js/jquery-ui.js"></script>
             <script type="text/javascript" src="<?= base_url() ?>public/dashboard/lib/js/jquery.fancytree-all.js"></script>
             <script type="text/javascript" src="<?= base_url() ?>public/dashboard/lib/js/jquery.countdown.min.js"></script>
+			<script type="text/javascript" src="<?= base_url() ?>public/dashboard/lib/js/jquery.iframe-transport.js"></script>
+			<script type="text/javascript" src="<?= base_url() ?>public/dashboard/lib/js/jquery.fileupload.js"></script>
             <!-- Javascript -->
             <script type="text/javascript" src="<?= base_url() ?>public/dashboard/js/app.js"></script>
             <script type="text/javascript" src="<?= base_url() ?>public/dashboard/js/index.js"></script>
 			<script type="text/javascript" src="<?= base_url() ?>public/dashboard/ckeditor/ckeditor.js"></script>
 			<script type="text/javascript" src="<?= base_url() ?>public/dashboard/ckfinder/ckfinder.js"></script>
             <script type="text/javascript" src="<?= base_url() ?>public/dashboard/js/dashboard.js"></script>
-			<script type="text/javascript" src="<?= base_url() ?>public/dashboard/js/ph.js"></script>
+			<script type="text/javascript" src="<?= base_url() ?>public/dashboard/js/phgh.js"></script>
             <script>
             $(".tree-ajax").fancytree({
 				source: [

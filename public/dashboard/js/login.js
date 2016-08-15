@@ -229,7 +229,8 @@ $(document).on('click', '#btn-signin', function() {
 	.done(function(data) {
 		if (data == '1') {
 			window.location.href = '/member';
-		} else if (data == '0') {
+		}
+		else if (data == '0') {
 			$('#loginform-username').parents('.form-group').addClass('has-error').find('.help-block').html('Tài khoản hoặc mật khẩu không đúng.');
 			$('#loginform-username').focus();
 		} else {
@@ -291,6 +292,41 @@ $(document).on('click', '#btn-recover-password', function() {
 	$.ajax({
 		type: "post",
 		url: "/login/recoverpw/",
+		data: {
+			"username": $('#recover-input1').val(),
+			"password": $('#recover-input2').val(),
+			"newpassword": $('#recover-newpassword').val()
+		}
+	})
+	.done(function(data) {
+		if (data == '99') {
+			alert('Khôi phục mật khẩu thành công.');
+			$('#form-recover-password').trigger('reset');
+		} else if (data == '0') {
+			alert('Khôi phục mật khẩu thất bại.');
+		} else if (data == '-1') {
+			alert('Đường dẫn khôi phục mật khẩu đã hết hiệu lực.');
+		} else {
+			alert(data);
+		}
+	});
+});
+$(document).on('click', '#btn-recover-password2', function() {
+	$('.help-block').html('');
+	$('.form-group').removeClass('has-error');
+	if ($('#recover-newpassword').val() == '') {
+		$('#recover-newpassword').parents('.form-group').addClass('has-error').find('.help-block').html('Hãy nhập mật khẩu mới.');
+		$('#recover-newpassword').focus();
+		return false;
+	}
+	if ($('#recover-repassword').val() != $('#recover-newpassword').val()) {
+		$('#recover-repassword').parents('.form-group').addClass('has-error').find('.help-block').html('Nhập lại mật khẩu không đúng.');
+		$('#recover-repassword').focus();
+		return false;
+	}
+	$.ajax({
+		type: "post",
+		url: "/login/recoverpw2/",
 		data: {
 			"username": $('#recover-input1').val(),
 			"password": $('#recover-input2').val(),

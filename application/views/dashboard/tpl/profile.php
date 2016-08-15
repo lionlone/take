@@ -156,7 +156,7 @@
 												<i class="icon-user-lock text-muted"></i>
 											</div>
 										</div>
-										
+											<a href="#recover2" id="recover-password2">Quên mật khẩu cấp 2</a>
 										
 										
 										
@@ -167,3 +167,4 @@
 									</form>
 </div>
 								</div>
+	

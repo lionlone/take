@@ -39,24 +39,22 @@
                                     </div>
                                 </div>
                             </li>
-                            <li class="panel panel-default dropdown">
-                                <a data-toggle="collapse" href="#gh">
+                            <li class="">
+                                <a href="<?= base_url(); ?>member/gha">
                                     <span class="icon glyphicon glyphicon-save"></span><span class="title">Phòng nhận (GH)</span>
                                 </a>
                                 <!-- Dropdown level 1 -->
-                                <div id="gh" class="panel-collapse collapse">
+                                <!-- <div id="gh" class="panel-collapse collapse">
                                     <div class="panel-body">
                                         <ul class="nav navbar-nav">
-                                            <li><a href="<?= base_url(); ?>member/gha"><span class="icon fa fa-code"></span><span class="title">Mã A</span></a>
-                                            </li>
-                                            <li><a href="<?= base_url(); ?>member/ghb"><span class="icon fa fa-code"></span><span class="title">Mã B</span></a>
+                                            <li><a href=""><span class="icon fa fa-code"></span><span class="title">Mã A</span></a>
                                             </li>
                                         </ul>
                                     </div>
-                                </div>
+                                </div> -->
                             </li>
                             <li>
-                                <a href="<?= base_url(); ?>member/support">
+                                <a href="<?= base_url(); ?>member/interest">
                                     <span class="icon fa fa-usd"></span><span class="title">Hoa hồng hệ thống</span>
                                 </a>
                                 <!-- Dropdown level 1 -->
@@ -71,7 +69,7 @@
                             </li>
                             <!-- Dropdown-->
                             <li>
-                                <a href="<?= base_url(); ?>member/support">
+                                <a href="<?= base_url(); ?>member/compensate">
                                     <span class="icon fa fa-line-chart"></span><span class="title">Điểm thưởng</span>
                                 </a>
                                 <!-- Dropdown level 1 -->
@@ -146,25 +144,26 @@
                                    </div>
                                </div>
                             </li> -->
-<?php
-	if ($this->session->userdata('admin') == "1") {
-		echo "<li class=\"panel panel-default dropdown\">
-				<a data-toggle=\"collapse\" href=\"#administrator\">
-					<span class=\"icon fa fa-user-secret\"></span><span class=\"title\">Quản trị</span>
-				</a>
-				<div id=\"administrator\" class=\"panel-collapse collapse\">
-					<div class=\"panel-body\">
-						<ul class=\"nav navbar-nav\">
-							<li><a href=\"".base_url()."member/notice\"><span class=\"icon fa fa-bell\"></span><span class=\"title\">Quản lý thông báo</span></a>
-							</li>
-							<li><a href=\"".base_url()."member/pedit\"><span class=\"icon fa fa-book\"></span><span class=\"title\">Quản lý chính sách</span></a>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</li>";
-	}
-?>
+<?php if ($this->session->userdata('admin') == "1"): ?>
+    <li class="panel panel-default dropdown">
+        <a data-toggle="collapse" href="#administrator">
+            <span class="icon fa fa-user-secret"></span><span class="title">Quản trị</span>
+        </a>
+        <div id="administrator" class="panel-collapse collapse">
+            <div class="panel-body">
+                <ul class="nav navbar-nav">
+                    <li><a href="<?= base_url(); ?>member/notice"><span class="icon fa fa-bell"></span><span class="title">Quản lý thông báo</span></a>
+                    </li>
+                    <li><a href="<?= base_url(); ?>member/pedit"><span class="icon fa fa-book"></span><span class="title">Quản lý chính sách</span></a>
+                    </li>
+                    <li><a href="<?= base_url(); ?>member/config"><span class="icon fa fa-wrench"></span><span class="title">Cấu hình</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </li>
+<?php endif ?>
+
                             <li>
                                 <a href="<?= base_url(); ?>member/support">
                                     <span class="icon fa fa-support"></span><span class="title">Hỗ trợ</span>

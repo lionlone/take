@@ -10,15 +10,47 @@ class Member extends CI_Controller {
 		$this->load->model('Policy_model');
 		$this->load->model('Pin_model');
 		$this->load->model('Ph_model');
+		$this->load->model('Gh_model');
 	    $login = $this->session->userdata('login');
 	    if (!$login) {
 			redirect('login');
     	}
-    	$this->db->select('userid, username, level');
+    	$this->db->select('userid, username, level, active');
     	$this->db->where('username', $login); 
 		$query = $this->db->get('user');
-		$this->data['sidebar'] = $query->row_array();
+		$sidebar = $query->row_array();
+		if ($sidebar['active'] != 0) {
+			redirect('login/logout');
+		}
+		$this->data['sidebar'] = $sidebar;
 	}
+
+	public function unlook($idsource = "", $phid = "" , $room = ""){
+		$this->Member_model->unlook($idsource, $phid);
+    	redirect("/member/ph".$room);
+	}
+
+	public function verifyPH(){
+		$joinphid = $this->input->post_get('joinphid', TRUE);
+		$code = $this->input->post_get('code', TRUE);
+		//$room = $this->input->post_get('room', TRUE);
+		if ($this->Ph_model->verifyPH($code, $joinphid)) {
+			echo "1";
+		} else {
+			echo "0";
+		}
+	}
+
+	public function verifyGH(){
+		$joinphid = $this->input->post_get('joinphid', TRUE);
+		$code = $this->input->post_get('code', TRUE);
+		if ($this->Gh_model->verifyGH($joinphid, $code)) {
+			echo "1";
+		} else {
+			echo "0";
+		}
+	}
+
 	public function index(){
 		$data['sidebar'] = $this->data['sidebar'];
 		$login = $this->session->userdata('login');
@@ -231,6 +263,21 @@ class Member extends CI_Controller {
 			echo "0";
 		}
 	}
+	public function updateimage(){
+		$joinphid = $this->input->post_get('joinphid', TRUE);
+		$code = $this->input->post_get('code', TRUE);
+		$image = $this->input->post_get('image', TRUE);
+		$this->Ph_model->updateImage($joinphid, $code, $image);
+	}
+	public function reportimage(){
+		$joinphid = $this->input->post_get('joinphid', TRUE);
+		$code = $this->input->post_get('code', TRUE);
+		if ($this->Gh_model->reportImage($joinphid, $code)) {
+			echo "1";
+		} else {
+			echo "0";
+		}
+	}
 	public function pintable(){
 		echo $this->Pin_model->loadHistory();
 	}
@@ -241,14 +288,19 @@ class Member extends CI_Controller {
 	public function loadpolicy(){
 		echo $this->Policy_model->loadPolicy();
 	}
+	public function listphgh(){
+		$room = $this->input->post_get('room', TRUE);
+		if ($room != "") echo json_encode($this->Ph_model->listPH($room));
+		else echo json_encode($this->Gh_model->listGH());
+	}
 	public function pha(){
 		$data['sidebar'] = $this->data['sidebar'];
-		// $data['main'] = 'ph';
-		$data['main'] = 'look';
+		$data['main'] = 'ph';
 		$data['room'] = 'A';
 		$data['wait'] = $this->Ph_model->waitPH('A');
 		//$data_main['count_key'] = $this->Member_model->count_key($this->session->userdata('login'));
 		$data['join'] = $this->Ph_model->joinPH('A');
+		$data['historyPH'] = $this->Ph_model->historyPH('A');
 		$data_main['count_pin'] = $this->Member_model->count_pin();
 		$data['data_main'] = $data_main;
 		$this->load->view('dashboard/layout',$data);
@@ -256,29 +308,70 @@ class Member extends CI_Controller {
 
 	public function phb(){
 		$data['sidebar'] = $this->data['sidebar'];
-		//$data['main'] = 'ph';
-		$data['main'] = 'look';
+		$data['main'] = 'ph';
 		$data['room'] = 'B';
 		$data['wait'] = $this->Ph_model->waitPH('B');
 		$data['join'] = $this->Ph_model->joinPH('B');
+		$data['historyPH'] = $this->Ph_model->historyPH('B');
 		$data_main['count_pin'] = $this->Member_model->count_pin();
 		$data['data_main'] = $data_main;
 		$this->load->view('dashboard/layout',$data);
 	}
 	public function gha(){
 		$data['sidebar'] = $this->data['sidebar'];
-		// $data['main'] = 'gh';
-		$data['main'] = 'look';
+		$data['main'] = 'gh';
 		$data['room'] = 'A';
+		$data['wait'] = $this->Gh_model->waitGH('A');
+		$data['join'] = $this->Gh_model->joinGH('A');
+		$data['historyGH'] = $this->Gh_model->historyGH('A');
 		$data['data_main'] = array();
 		$this->load->view('dashboard/layout',$data);
 	}
-	public function ghb(){
+	public function config(){
+		if (!empty($_POST['config'])) {
+			$this->Member_model->config();
+		}
 		$data['sidebar'] = $this->data['sidebar'];
-		//$data['main'] = 'gh';
-		$data['main'] = 'look';
-		$data['room'] = 'B';
+		$data['main'] = 'config';
+		$data['data_config'] = $this->Member_model->loadConfig();
 		$data['data_main'] = array();
 		$this->load->view('dashboard/layout',$data);
 	}
+
+	public function interest(){
+		$data['sidebar'] = $this->data['sidebar'];
+		$data['main'] = 'interest';
+		$data['data_main'] = array();
+		$this->load->view('dashboard/layout',$data);
+	}
+	public function compensate(){
+		$data['sidebar'] = $this->data['sidebar'];
+		$data['main'] = 'compensate';
+		$userid = $this->session->userdata('userid');
+		$sql = "SELECT count(*) as total FROM joinph where userid = '$userid' AND status = 3 AND verify = 1 AND  sent = 1 group by userid";
+		$resultJoinPH = $this->db->query($sql);
+		$row_JoinPH = $resultJoinPH->row_array();
+		$sum_ph = $row_JoinPH['total'];
+
+		$sql = "SELECT * FROM wallet where userid = '$userid'";
+		$resultWallet = $this->db->query($sql);
+		$row_Wallet = $resultWallet->row_array();
+		$pointWallet = $row_Wallet['point'];
+		$point = $row_Wallet['point'];
+
+		$sum_ph_Wallet = $row_Wallet['sum_ph'];
+
+		if ($sum_ph > $sum_ph_Wallet) {
+			echo $point = (($sum_ph - $sum_ph_Wallet)*1500000 + $pointWallet )*(3/100);
+			$this->db->where('userid', $userid );
+			$this->db->update('wallet', array('point' => $point,'sum_ph' => $sum_ph));
+		}
+		$data['point'] = $point;
+		$data['data_main'] = array();
+		$this->load->view('dashboard/layout',$data);
+	}
+	public function recoverpass2() {
+		echo $this->Member_model->sendMail($this->session->userdata("userid"));
+	}
+
 }

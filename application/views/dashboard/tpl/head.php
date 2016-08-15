@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>public/dashboard/lib/css/jquery.dataTables.min.css">
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>public/dashboard/lib/css/dataTables.bootstrap.css">
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>public/dashboard/lib/css/select2.min.css">
+	<link rel="stylesheet" type="text/css" href="<?= base_url() ?>public/dashboard/lib/css/jquery.fileupload.css">
     <!-- CSS App -->
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>public/dashboard/css/style.css">
     <link rel="stylesheet" type="text/css" href="<?= base_url() ?>public/dashboard/css/themes/flat-blue.css">
